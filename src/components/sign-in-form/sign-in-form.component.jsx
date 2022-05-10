@@ -34,7 +34,6 @@ const SignInForm = () => {
 
         try {
             const { user } = await logInAuthUserWithEmailAndPassword(email, password)
-            console.log(user)
             resetFormFields()
         } catch (error) {
             switch (error.code) {
@@ -59,8 +58,7 @@ const SignInForm = () => {
     }
 
     const signInWithGoogle = async () => {
-        const { user } = await signInWithGooglePopup();
-        await createUserDocumentFromAuth(user)
+        await signInWithGooglePopup();
     }
     return (
         <div className='sign-up-container'>
