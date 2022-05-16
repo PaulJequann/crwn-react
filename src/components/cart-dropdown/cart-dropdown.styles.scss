@@ -20,10 +20,11 @@
     height: 240px;
     display: flex;
     flex-direction: column;
-    overflow: scroll;
+    overflow: auto;
   }
 
   button {
+    font-size: 12px;
     margin-top: auto;
   }
 }
