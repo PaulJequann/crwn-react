@@ -5,7 +5,6 @@ import './sign-in-form.styles.scss'
 import {
     signInWithGooglePopup,
     logInAuthUserWithEmailAndPassword,
-    createUserDocumentFromAuth,
 } from '../../utils/firebase/firebase.utils'
 
 import FormInput from '../form-input/form-input.component'
@@ -33,7 +32,7 @@ const SignInForm = () => {
         }
 
         try {
-            const { user } = await logInAuthUserWithEmailAndPassword(email, password)
+            await logInAuthUserWithEmailAndPassword(email, password)
             resetFormFields()
         } catch (error) {
             switch (error.code) {
