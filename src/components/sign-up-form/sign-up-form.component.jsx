@@ -10,6 +10,8 @@ import FormInput from '../form-input/form-input.component'
 import Button from '../button/button.component'
 
 import './sign-up-form.styles.scss'
+import { useDispatch } from 'react-redux'
+import { signUpStart } from '../../store/user/user.action'
 
 const defaultFormFields = {
     displayName: '',
@@ -19,6 +21,7 @@ const defaultFormFields = {
 }
 
 const SignUpForm = () => {
+    const dispatch = useDispatch();
     const [formFields, setFormFields] = useState(defaultFormFields)
     const { displayName, email, password, confirmPassword } = formFields
 
@@ -28,21 +31,15 @@ const SignUpForm = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault()
-        //confirm passwords match
         if (!password === confirmPassword) {
             alert("passwords do not match")
             return
         }
         try {
-            const { user } = await createAuthUserWithEmailAndPassword(email, password)
-            await createUserDocumentFromAuth(user, { displayName })
-            resetFormFields()
+            dispatch(signUpStart(email, password, displayName));
+            resetFormFields();
         } catch (error) {
-            if (error.code === 'auth/email-already-in-use') {
-                alert('Cannot create user, email already in use')
-            } else {
-                console.log('user creation encountered an error', error)
-            }
+            console.log('user creation encountered an error', error);
         }
     }
 

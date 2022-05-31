@@ -2,13 +2,10 @@ import { useState } from 'react'
 
 import './sign-in-form.styles.scss'
 
-import {
-    signInWithGooglePopup,
-    logInAuthUserWithEmailAndPassword,
-} from '../../utils/firebase/firebase.utils'
-
 import FormInput from '../form-input/form-input.component'
 import Button, { BUTTON_TYPE_CLASSES } from '../button/button.component'
+import { useDispatch } from 'react-redux';
+import { googleSignInStart, emailSignInStart } from '../../store/user/user.action';
 
 const defaultFormFields = {
     email: '',
@@ -16,6 +13,7 @@ const defaultFormFields = {
 }
 
 const SignInForm = () => {
+    const dispatch = useDispatch();
     const [formFields, setFormFields] = useState(defaultFormFields)
     const { email, password } = formFields
 
@@ -23,42 +21,25 @@ const SignInForm = () => {
         setFormFields(defaultFormFields)
     }
 
-    const handleSubmit = async (event) => {
-        event.preventDefault()
-        //confirm passwords match
-        if (!email || !password) {
-            alert('Please enter an email and password')
-            return
-        }
+    const signInWithGoogle = async () => {
+        dispatch(googleSignInStart());
+    }
 
+    const handleSubmit = (event) => {
+        event.preventDefault()
         try {
-            await logInAuthUserWithEmailAndPassword(email, password)
+            dispatch(emailSignInStart(email, password));
             resetFormFields()
         } catch (error) {
-            switch (error.code) {
-                case 'auth/wrong-password':
-                    alert('Invalid Credentials')
-                    break
-                case 'auth/invalid-email':
-                    alert('Invalid Credentials')
-                    break
-                case 'auth/user-not-found':
-                    alert('User not found')
-                    break
-                default:
-                    console.log('signinWithEmailAndPassword encountered an error:', error)
-            }
-        }
-    }
+            console.log('user sign in failed', error);
+        };
+    };
 
     const handleChange = (event) => {
         const { name, value } = event.target
         setFormFields({ ...formFields, [name]: value })
     }
 
-    const signInWithGoogle = async () => {
-        await signInWithGooglePopup();
-    }
     return (
         <div className='sign-up-container'>
             <h2>I already have an account</h2>
